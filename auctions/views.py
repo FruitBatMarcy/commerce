@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -74,7 +75,10 @@ def create_listing(request):
         name = request.POST["name"]
         disc = request.POST["discription"]
         image = request.POST["imageURL"]
-        listing = Listing(name=name,discription=disc,imgURL=image)
+        username = request.POST["user"]
+        user = User.objects.get(username=username)
+        deadline = date.today() + timedelta(days=1)
+        listing = Listing(name=name,discription=disc,imgURL=image, activeUntil=deadline, poster=user)
         listing.save()
-        return HttpResponseRedirect(reverse(f"{listing.id}"))
+        return HttpResponseRedirect(reverse(f"listing", args=[listing.id,]))
     return render(request, "auctions/create_listing.html")

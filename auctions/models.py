@@ -1,4 +1,5 @@
 from datetime import date
+import django
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -16,7 +17,7 @@ class Listing(models.Model):
     active = models.BooleanField(max_length=1, default=False)
     
     
-    activeUntil = models.DateTimeField(max_length=20, blank=True, default=date.today())
+    activeUntil = models.DateTimeField(max_length=20, blank=True, default=django.utils.timezone.now)
 
     def __str__(self):
         return f"{self.name}"
