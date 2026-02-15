@@ -1,3 +1,5 @@
+from datetime import date, timedelta, timezone
+import datetime
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -8,8 +10,16 @@ from .models import User, Listing
 
 
 def index(request):
+    listings = Listing.objects.all()
+    now = datetime.datetime.now(tz=timezone(timedelta(0)))
+    activeListings = []
+    for listing in listings:
+
+        if now < listing.activeUntil:
+            activeListings.append(listing)
+
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.all()
+        "listings": activeListings
     })
 
 
@@ -72,9 +82,12 @@ def listing(request, listing_id):
 def create_listing(request):
     if request.method == "POST":
         name = request.POST["name"]
-        disc = request.POST["discription"]
+        dscp = request.POST["description"]
         image = request.POST["imageURL"]
-        listing = Listing(name=name,discription=disc,imgURL=image)
+        username = request.POST["user"]
+        user = User.objects.get(username=username)
+        deadline = date.today() + timedelta(days=7)
+        listing = Listing(name=name,description=dscp,imgURL=image, activeUntil=deadline, poster=user)
         listing.save()
-        return HttpResponseRedirect(reverse(f"{listing.id}"))
+        return HttpResponseRedirect(reverse(f"listing", args=[listing.id,]))
     return render(request, "auctions/create_listing.html")
