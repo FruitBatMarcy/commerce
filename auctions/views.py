@@ -82,12 +82,12 @@ def listing(request, listing_id):
 def create_listing(request):
     if request.method == "POST":
         name = request.POST["name"]
-        disc = request.POST["discription"]
+        dscp = request.POST["description"]
         image = request.POST["imageURL"]
         username = request.POST["user"]
         user = User.objects.get(username=username)
         deadline = date.today() + timedelta(days=7)
-        listing = Listing(name=name,discription=disc,imgURL=image, activeUntil=deadline, poster=user)
+        listing = Listing(name=name,description=dscp,imgURL=image, activeUntil=deadline, poster=user)
         listing.save()
         return HttpResponseRedirect(reverse(f"listing", args=[listing.id,]))
     return render(request, "auctions/create_listing.html")

@@ -7,7 +7,7 @@
         <form action="{% url 'create_listing' %}" method="POST">
             {% csrf_token %}
             <input type="text" name="name" placeholder="Name" required>
-            <input type="text" name="discription" placeholder="Discription" required>
+            <input type="text" name="description" placeholder="Description" required>
             <input type="text" name="imageURL" placeholder="URL of Image" required>
             <input type="text" name="user" value="{{ user.username }}" readonly hidden>
             <input type="submit" value="Submit">
